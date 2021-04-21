@@ -1,0 +1,250 @@
+#####################################################################
+#
+# Lab04
+#
+# Alexa Sheets
+#
+# Spring 2021
+#
+#
+#####################################################################
+# Clears everything from the workspace
+rm(list=ls())
+
+#1
+x <- c(1,2,3,4,5)
+y <- c(0.6,1.9,4.3,7.6,12.6)
+
+# transform y and form sums
+yt <- log(y)
+xt <- log(x)
+x2s <- sum(x^2)
+xt2s <- sum(xt * xt)
+xs <- sum(x)
+xts <- sum(xt)
+N <- length(x)
+xyts <- sum(x * yt)
+xtyts <- sum(xt * yt)
+yts <- sum(yt)
+
+# Form matrix
+A <- matrix(c(x2s,xs,xs,N),nrow=2,ncol=2,byrow=TRUE) #normal eq
+A2 <- matrix(c(xt2s,xts,xts,N),nrow=2,ncol=2,byrow=TRUE) #normal eq for part B
+B <- c(xyts,yts)
+B2 <- c(xtyts,yts) #for part B
+C <- solve(A,B)
+C2 <- solve(A2,B2) # solve for 2nd normal eq, part B
+
+
+
+yp <- exp(C[1]*x+C[2])
+yp2 <- exp(C2[2])*x^C2[1]
+#ypC <- exp(B2[1])*exp(B2[2])
+xrange <- range(x)
+E1Err <- sum(abs(yp-y))/N #predicted
+E2Err <- sum(abs(yp2-y))/N #predicted
+
+
+cat("for part 1a, C= ",exp(C[2]),", A= ",C[1],"\n")
+cat("for part 1b, C= ",exp(C2[2]),", A= ",C2[1],"\n")
+cat("Average Error for 1a = ",E1Err,"\n")
+cat("Average Error fpr 1b = ",E2Err,"\n")
+cat("1b is a better curve fit because it has less average error and 
+    a better fit. \n")
+
+
+curve(0.36*exp(0.75*x),from=xrange[1],to=xrange[2],col="black",
+      main="Nonlinear Least Squares Fit: C*exp(Ax)",type="l",
+      xlab="x",ylab="y")
+points(x,y,col="red",pch=1) #data
+points(x,yp,col="blue",pch=2) #predicted
+legend(2,15,c("Exp Fit","Data","Predicted"),lty=c(1,NA,NA),
+       col=c("black","red","blue"),pch=c(NA,1,2))
+#####################################################
+curve(exp(C2[2])*(x)^(C2[1]),from=xrange[1],to=xrange[2],col="red",
+      main="Nonlinear Least Squares Fit: Cx^A ",type="l",
+      xlab="x",ylab="y")
+points(x,y,col="black",pch=1) #data
+points(x,yp2,col="blue",pch=2) #predicted
+legend(2,10,c("Exp Fit","Data","Predicted"),lty=c(1,NA,NA),
+       col=c("red","black","blue"),pch=c(NA,1,2))
+
+
+#############################################################################
+#############################################################################
+#2
+u <- c(-1,0,1,2,3)
+v <- c(6.62,3.94,2.17,1.35,0.89)
+vt <- log(v)
+vt2 <- 1/v
+u2s <- sum(u^2)
+us <- sum(u)
+N <- length(u)
+uvts <- sum(u * vt)
+uvt2s <- sum(u*vt2)
+vts <- sum(vt)
+
+# Form matrix
+A <- matrix(c(u2s,us,us,N),nrow=2,ncol=2,byrow=TRUE) #normal eq
+B <- c(uvts,vts)
+C <- solve(A,B)
+A2 <- matrix(c(u2s,us,us,N),nrow=2,ncol=2,byrow=TRUE) #normal eq for part B
+B2 <- c(uvt2s,vts) #for part B
+C2 <- solve(A2,B2) # solve for 2nd normal eq, part B
+
+# a)
+vp <- exp(C[2])*exp(C[1]*u)
+urange <- range(u)
+E1Err <- sum(abs(vp-v))/N #predicted
+# b)
+
+vp2 <- C2[1]/u + C2[2]
+E2Err <- sum(abs(vp2-v))/N #predicted
+
+
+cat("for part 2a, C= ",exp(C[2]),", A= ",C[1],"\n")
+cat("for part 2b, B= ",C2[2],", A= ",C2[1],"\n")
+cat("Average Error for 2a = ",E1Err,"\n")
+cat("Average Error fpr 2b = ",E2Err," which is because the second value
+    when solving for 1/y is infinity. \n")
+cat("2a is a better fit because it's accurate, has small error 
+    and isn't hindered by an infinite value. \n")
+
+curve(exp(C[2])*exp(C[1]*x),from=urange[1],to=urange[2],col="black",
+      main="Nonlinear Least Squares Fit: C*exp(Ax)",type="l",
+      xlab="x",ylab="y")
+points(u,v,col="red",pch=1) #data
+points(u,vp,col="blue",pch=2) #predicted
+legend("topright",legend=c("Data","Predicted")
+       ,col=c("red","blue"),pch=c(1,2))
+##############################################################
+curve(C2[1]*(1/x) +exp(C2[2]),from=urange[1],to=urange[2],col="black",
+      main="Nonlinear Least Squares Fit: 1/(Ax+B)",type="l",
+      xlab="x",ylab="y",ylim=c(-10,30))
+points(u,v,col="red",pch=1) #data
+points(u,vp2,col="blue",pch=2) #predicted
+legend("topright",inset=c(.1,0),legend=c("Data","Predicted")
+       ,col=c("red","blue"),pch=c(1,2))
+############################################################################
+############################################################################
+
+#3
+rm(list=ls())
+# x = decades starting at 1900
+xyear <- c(1900,1920,1940,1960,1980)
+x <-  c(0,20,40,60,80)
+y <- c(76.2,106,132.2,179.3,226.5)
+L = 800
+#3b
+xyear2 <- c(1900,1920,1940,1960,1980,2000,2010)
+x2 <-  c(0,20,40,60,80,100,110)
+y2 <- c(76.2,106,132.2,179.3,226.5,281.4,308.7)
+
+# transform y and form sums
+yt <- log(L/y -1)
+x2s <- sum(x^2)
+xs <- sum(x)
+N <- length(x)
+xyts <- sum(x * yt)
+yts <- sum(yt)
+#3b
+ytb <- log(L/y2 -1)
+x2sb <- sum((x2)^2)
+xsb <- sum(x2)
+Nb <- length(x2)
+xytsb <- sum(x2 * ytb)
+ytsb <- sum(ytb)
+
+# Form matrix
+A <- matrix(c(x2s,xs,xs,N),nrow=2,ncol=2,byrow=TRUE) #normal eq
+B <- c(xyts,yts)
+C <- solve(A,B)
+#3b
+A2 <- matrix(c(x2sb,xsb,xsb,Nb),nrow=2,ncol=2,byrow=TRUE) #normal eq
+B2 <- c(xytsb,ytsb)
+C2 <- solve(A,B)
+
+yp <- (L/(exp(yt)+1))
+xrange <- range(x)
+E1Err <- sum(abs(yp-y))/N #predicted
+#3b
+yp2 <- (L/(exp(ytb)+1))
+x2range <- range(x2)
+E2Err <- sum(abs(yp2-y2))/Nb #predicted
+
+
+
+cat("C= ",exp(C[2]),", A= ",C[1],"\n")
+cat("Average Error for 3a= ",E1Err,"\n")
+#3b
+cat("Average Error for 3b= ",E2Err,"\n")
+
+curve(L/(1+(exp(C[2])*exp(C[1]*x))),from=xrange[1],to=xrange[2],col="black",
+      main="Logistic Growth Model: L/(1+C*exp(At))",type="l",
+      xlab="x",ylab="y")
+points(x,y,col="red",pch=1) #data
+points(x,yp,col="blue",pch=2) #predicted
+legend(60,150,c("Exp Fit","Data","Predicted"),lty=c(1,NA,NA),
+       col=c("black","red","blue"),pch=c(NA,1,2)) #creates a legend for the graph
+###########
+#3b and 3c
+curve(L/(1+(exp(C2[2])*exp(C2[1]*x))),from=x2range[1],to=x2range[2],col="black",
+      main="Logistic Growth Model: L/(1+C*exp(At)) Years 2000-2010",type="l",
+      xlab="x",ylab="y")
+points(x2,y2,col="red",pch=1) #data
+points(x2,yp2,col="blue",pch=2) #predicted
+legend(800,200,c("Exp Fit","Data","Predicted"),lty=c(1,NA,NA),
+       col=c("black","red","blue"),pch=c(NA,1,2))
+cat("From the graph including the years 2000 and 2010, we can see that the
+    estimated population fits the trend and the predicted points 
+    are accurate. \n")
+############################################################################
+############################################################################
+
+#4
+x <- c(1,2,3,4,5)
+y <- c(2,5,10,17,26)
+A <- -0.1064253
+B <- 0.4987330
+C <- -5.476617
+D <- -17.719403
+N <- length(x)
+
+#when:
+X <- sum(x*y)
+Y <- y
+xt <- 1/x
+yt <- (-1/C)*X + (D/C)
+yp <- D/(x+C) 
+
+#when:
+X2 <- x
+Y2 <- sum(1/y)
+y2t <- A*x + B
+yp2 <- y*(A*x +B)
+
+xrange <- range(x)
+E1Err <- sum(abs(yp-y))/N #predicted
+E2Err <- sum(abs(yp2-y))/N
+cat("The average Error for y= D/(x+C) is ", E1Err, "\n")
+cat("The average Error for y= Ax+B is ", E2Err, "\n")
+
+curve(D/(x+C),from=xrange[1],to=xrange[2],col="black",
+      main="Nonlinear Least Squares Fit: D/(x+C)",type="l",
+      xlab="x",ylab="y")
+points(x,y,col="red",pch=1) #data
+points(x,yp,col="blue",pch=2) #predicted
+legend(1,30,c("Exp Fit","Data","Predicted"),lty=c(1,NA,NA),
+       col=c("black","red","blue"),pch=c(NA,1,2))
+
+curve(1/(A*x+B),from=xrange[1],to=xrange[2],col="black",
+      main="Nonlinear Least Squares Fit: 1/(Ax+B)",type="l",
+      xlab="x",ylab="y")
+points(x,y,col="red",pch=1) #data
+points(x,yp2,col="blue",pch=2) #predicted
+legend(1,1500, c("Exp Fit","Data","Predicted"),lty=c(1,NA,NA),
+       col=c("black","red","blue"),pch=c(NA,1,2))
+
+cat("The second fit is better, y=1/(Ax+B), because the predicted values match
+  the data well. In regards the the first fit, y=D/(x+C),the data does not fit
+  the curve.")
